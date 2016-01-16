@@ -54,7 +54,7 @@ EXAMPLES
 	p 1 1 -360 -343.833 390.909
 
 
-	$ prktext < input.txt
+	$ prktext < example.txt
 	# produces example.PRK
 
 	$ prktext example.PRK
