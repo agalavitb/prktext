@@ -1,0 +1,62 @@
+PRKTEXT
+
+	A PRK conversion utility.
+
+SYNOPSIS
+
+	prktext park.PRK > output.txt
+
+	prktext < input.txt
+
+DESCRIPTION
+
+	prktext translates THUG2 PRK files to and from text files.
+
+	When it is called without arguments, a text file is read from the
+	program's input and a PRK file with the same name as the park is written
+	in the current working directory. If a file by the same name exists, it
+	is overwritten.
+
+	If it is called with an argument, the file referred to by the argument
+	is opened and read as if it were a valid PRK file, and the corresponding
+	text file is written to the program's output.
+
+EXAMPLES
+
+	$ cat example.txt
+	example
+	0 2
+	25 25 8 8
+	   2   2   2   2   2   2   2   2
+	   2   0   0   2   2   0   0   2
+	   2   0   0   0   0   0   0   2
+	   2   0   0   0   0   0   0   2
+	  -2  -2  -2  -2  -2  -2  -2  -2
+	  -2  -2  -2  -2  -2  -2  -2  -2
+	  -2  -2  -2  -2  -2  -2  -2  -2
+	  -2  -2  -2  -2  -2  -2  -2  -2
+	o 26 26 0 0 74
+	o 30 26 0 0 74
+	o 25 32 -2 2 45
+	o 29 32 -2 2 45
+	o 26 29 -2 0 102
+	o 27 29 -2 0 102
+	o 28 29 -2 0 102
+	o 29 29 -2 0 102
+	o 30 29 -2 0 102
+	o 31 29 -2 0 102
+	o 28 27 0 0 102
+	o 29 27 0 0 102
+	o 25 29 -2 0 102
+	o 32 29 -2 0 102
+	g 26 26 -8 0 0  30 26 -8 0 2  000001fd 500 QP Transfer
+	p 0 1 358.792 -346.74 390.909
+	p 1 1 -360 -343.833 390.909
+
+
+	$ prktext < input.txt
+	# produces example.PRK
+
+	$ prktext example.PRK
+	# same as: cat example.txt
+
