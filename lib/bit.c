@@ -35,10 +35,16 @@ static int parse(int *type, int *len, char *s)
 
 int bitput(uchar *p, char *s, ...)
 {
-	int type, bitlen, n;
+	int type, len, n, bit;
+	uchar buf[8192];
+	va_list ap;
 
-	while ((n = parse(&type, &bitlen, s)) > 0) {
+	bit = 0;
+	va_start(ap, s);
+	while ((n = parse(&type, &len, s)) > 0) {
+		s += n, bit += len;
 	}
+	va_end(ap);
 	return 0;
 }
 
@@ -48,6 +54,20 @@ static unsigned long intu(uchar *p, int n);
 static void copystr(char *to, uchar *p, int n);
 static long ints(uchar *p, int bits);
 static double flt(uchar *p, int bits);
+
+static int writebits(uchar *to, uchar *p, int offset, int len)
+{
+	int i;
+
+	to += offset / 8;
+	offset %= 8;
+	for (i = 0; len > 0; i++) {
+		to[i] = p[i]<<offset | (to[i] & 0xff>>(8-offset));
+		to[i+1] = p[i+1] >> 8-offset;
+		len -= 8;
+	}
+	return i;
+}
 
 static int readbits(uchar *to, uchar *p, int offset, int len)
 {
@@ -65,18 +85,17 @@ static int readbits(uchar *to, uchar *p, int offset, int len)
 	return i;
 }
 
-
 int bitget(uchar *p, char *s, ...)
 {
-	int bit, n, type, bitlen, len;
+	int bit, n, type, len;
 	uchar buf[8192];
 	va_list ap;
 
 	bit = 0;
 	va_start(ap, s);
-	while ((n = parse(&type, &bitlen, s)) > 0) {
-		len = readbits(buf, p, bit, bitlen);
-		if (type == 'u' && bitlen <= 8*2)
+	while ((n = parse(&type, &len, s)) > 0) {
+		readbits(buf, p, bit, len);
+		if (type == 'u' && len <= 8*2)
 			*va_arg(ap, unsigned *) = intu(buf, len);
 		else if (type == 'u')
 			*va_arg(ap, unsigned long *) = intu(buf, len);
@@ -84,15 +103,15 @@ int bitget(uchar *p, char *s, ...)
 			copystr(va_arg(ap, char *), buf, len);
 		else if (type == 'b')
 			memcpy(va_arg(ap, unsigned char *), buf, len);
-		else if (type == 'f' && bitlen <= 8*4)
-			*va_arg(ap, float *) = flt(buf, bitlen);
+		else if (type == 'f' && len <= 8*4)
+			*va_arg(ap, float *) = flt(buf, len);
 		else if (type == 'f')
-			*va_arg(ap, double *) = flt(buf, bitlen);
-		else if (type == 'i' && bitlen <= 8*2)
-			*va_arg(ap, int *)  = ints(buf, bitlen);
+			*va_arg(ap, double *) = flt(buf, len);
+		else if (type == 'i' && len <= 8*2)
+			*va_arg(ap, int *)  = ints(buf, len);
 		else if (type == 'i')
-			*va_arg(ap, long *) = ints(buf, bitlen);
-		s += n, bit += bitlen;
+			*va_arg(ap, long *) = ints(buf, len);
+		s += n, bit += len;
 	}
 	va_end(ap);
 	return (bit+7) / 8;
