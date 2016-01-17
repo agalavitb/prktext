@@ -72,7 +72,7 @@ int fromtext(struct prk *prk)
 		           &p->x, &p->y, &p->z) == 5)
 			p++;
 		else if (sscanf(s, "g %d %d %d %d %d %d %d %d %d %d"
-		              "%08lx %u %32[^\r\n]",
+		              "%08lx %u%*c%32[^\r\n]",
 		           &s1->x, &s1->y, &s1->z, &s1->len, &s1->rtn,
 		           &s2->x, &s2->y, &s2->z, &s2->len, &s2->rtn,
 		           &g->type, &g->score, g->name) == 13)
