@@ -52,7 +52,7 @@ int fromtext(struct prk *prk)
 		return -1;
 	for (i = 0; i < prk->nx*prk->ny; i++) {
 		int x = prk->x + i%prk->nx;
-		int y = prk->y + i/prk->ny;
+		int y = prk->y + i/prk->nx;
 
 		if (scanf("%d", &prk->ground[y*58 + x]) != 1)
 			return -1;
@@ -120,7 +120,7 @@ int totext(struct prk *prk)
 	}
 
 	for (p = prk->pt; p < prk->pt+prk->npt; p++)
-		printf("p %d %d %g %g %g\n", p->cont, p->post, p->x,p->y,p->z);
+		printf("p %d %d %.17g %.17g %.17g\n", p->cont, p->post, p->x,p->y,p->z);
 
 	return ferror(stdout);
 }

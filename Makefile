@@ -13,10 +13,5 @@ prktext: libprk.a prktext.c prk.h
 libprk.a: $(OBJ)
 	ar rcs libprk.a $(OBJ)
 
-test: all
-	@cc $(CFLAGS) -I. lib/test.c -L. -lprk -lm -o lib/prktest
-	@lib/prktest ../parks/*.PRK || true
-	@rm -f lib/prktest
-
 clean:
 	rm -rf prktext libprk.a $(OBJ)
