@@ -36,12 +36,17 @@ int prkread(struct prk *prk, uchar *buf)
 	 && read_points(prk, p+sizeof rails, PRKLEN - (p+sizeof rails - buf)))
 		return 1;
 
-	/* make Z coordinates consistent with ground data */
+	/* make object, gap, and point coordinates consistent with ground */
 	for (n = 0; n < prk->nobj; n++)
 		prk->obj[n].z -= 16;
 	for (n = 0; n < prk->ngap; n++) {
 		prk->gap[n].side[0].z -= 16;
 		prk->gap[n].side[1].z -= 16;
+	}
+	for (n = 0; n < prk->npt; n++) {
+		prk->pt[n].x = (prk->pt[n].x + 3480) / 120.0;
+		prk->pt[n].y = (prk->pt[n].y + 3480) / 120.0;
+		prk->pt[n].z /= 48.0;
 	}
 
 	return prk->x < 0 || prk->y < 0 || prk->nx < 0 || prk->ny < 0
@@ -78,6 +83,7 @@ int read_points(struct prk *prk, uchar *p, long n)
 	uchar rail[] = { 0xc, 0xd6, 0x71, 0x45, 0xd8, 0xa };
 	uchar point[] = { 0x6, 0x53, 0x19, 0x26, 0x7f };
 	struct prkpoint pt;
+	float x, y, z;
 
 	if (n < 2 || memcmp(p, "\0\0", 2) == 0)
 		return 0;
@@ -86,7 +92,8 @@ int read_points(struct prk *prk, uchar *p, long n)
 		p += 8, n -= 8;
 		pt.cont = 0;
 		while (n >= 5+4+4+4+10 && memcmp(p, point, sizeof point) == 0) {
-			in(p, ".....f4f4f4", &pt.x, &pt.z, &pt.y);
+			in(p, ".....f4f4f4", &x, &z, &y);
+			pt.x = x, pt.z = z, pt.y = y;
 			pt.post = p[5+4+4+4] == 0xd;
 			prk->pt[prk->npt++] = pt;
 			pt.cont = 1;

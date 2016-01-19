@@ -31,9 +31,9 @@ struct prkgap {
 };
 
 struct prkpoint {
-	float x;
-	float y;
-	float z;
+	double x;
+	double y;
+	double z;
 	int post;
 	int cont;
 };

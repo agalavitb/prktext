@@ -123,7 +123,8 @@ int write_points(struct prk *prk, uchar *p)
 			p += out(p, "uu4ui2", 0xc, key("points"), 0xa,
 			         npoints(prk, pt));
 		}
-		p += out(p, "uu4f4f4f4", 6, key("pos"), pt->x, pt->z, pt->y);
+		p += out(p, "uu4f4f4f4", 6, key("pos"),
+		         pt->x*120.0 - 3480.0, pt->z*48.0, pt->y*120.0 - 3480.0);
 		if (pt->post)
 			p += out(p, "u....u4", 0xd, key("haspost"));
 		p += out(p, ".");

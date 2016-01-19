@@ -68,7 +68,7 @@ int fromtext(struct prk *prk)
 		if (sscanf(s, "o %d %d %d %d %d",
 		           &o->x, &o->y, &o->z, &o->rtn, &o->id) == 5)
 			o++;
-		else if (sscanf(s, "p %d %d %g %g %g", &p->cont, &p->post,
+		else if (sscanf(s, "p %d %d %lg %lg %lg", &p->cont, &p->post,
 		           &p->x, &p->y, &p->z) == 5)
 			p++;
 		else if (sscanf(s, "g %d %d %d %d %d %d %d %d %d %d"
