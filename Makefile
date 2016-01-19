@@ -1,4 +1,4 @@
-CFLAGS ?= -Wall -Wextra -pedantic -std=c89 -O2 -g3 -Wno-parentheses
+CFLAGS ?= -Wall -Wextra -pedantic -O2 -g3 -Wno-parentheses
 
 OBJ := lib/bit.o lib/file.o lib/read.o lib/write.o
 
