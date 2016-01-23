@@ -47,3 +47,15 @@ EXAMPLES
 	$ prktext example.PRK
 	# same as: cat example.txt
 
+LIMITATIONS
+
+	Goal data is not handled, although PRK files that contain goals can
+	still be read, but when they're written back out the goals will be
+	removed. There's just no way to represent goals, either in the file
+	format or in the library.
+
+	Parks that contain non-zero ground data outside of the designated square
+	(25,25+8+8 in the example) will have those values dropped in the text
+	representation. The library supports reading and writing those values,
+	but the text format doesn't.
+
