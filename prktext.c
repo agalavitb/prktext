@@ -43,7 +43,7 @@ int fromtext(struct prk *prk)
 	struct prkpoint *p;
 	struct prkgap *g;
 	struct prkobj *o;
-	char s[8192];
+	char s[8192], *t;
 	int i;
 
 	if (scanf("%64[^\r\n] %d %d %d %d %d %d",
@@ -65,19 +65,20 @@ int fromtext(struct prk *prk)
 		struct prkgap_side *s1 = &g->side[0];
 		struct prkgap_side *s2 = &g->side[1];
 
-		if (sscanf(s, "o %d %d %d %d %d",
+		t = s + strspn(s, " \t\r\n");
+		if (sscanf(t, "o %d %d %d %d %d",
 		           &o->x, &o->y, &o->z, &o->rtn, &o->id) == 5)
 			o++;
-		else if (sscanf(s, "p %d %d %lg %lg %lg", &p->cont, &p->post,
+		else if (sscanf(t, "p %d %d %lg %lg %lg", &p->cont, &p->post,
 		           &p->x, &p->y, &p->z) == 5)
 			p++;
-		else if (sscanf(s, "g %d %d %d %d %d %d %d %d %d %d"
+		else if (sscanf(t, "g %d %d %d %d %d %d %d %d %d %d"
 		              "%08lx %u%*c%32[^\r\n]",
 		           &s1->x, &s1->y, &s1->z, &s1->len, &s1->rtn,
 		           &s2->x, &s2->y, &s2->z, &s2->len, &s2->rtn,
 		           &g->type, &g->score, g->name) == 13)
 			g++;
-		else if (s[strspn(s, " \t\r\n")] != '\0')
+		else if (*t != '\0')
 			return -1;
 	}
 	prk->npt = p - prk->pt;

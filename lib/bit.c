@@ -113,18 +113,14 @@ void wrflt(uchar *p, int bits, double v)
 	int ebits, expt;
 
 	ebits = expbits(bits);
+	if (v == 0) {
+		wruint(p, (bits+7)/8, 0);
+		return;
+	}
 	if (sign = v < 0)
 		v = -v;
-	for (expt = 0; v >= 2.0; expt++)
-		v /= 2.0;
-	for (; v < 1.0; expt--)
-		if (v != 0.0)
-			v *= 2.0;
-		else {
-			wruint(p, (bits+7)/8, sign << bits-1);
-			return;
-		}
-	value = (v - 1.0) * ((1LU << bits-1-ebits) + 0.5);
+	expt = floor(log(v)/log(2) + 0.0000001);
+	value = (v/pow(2, expt) - 1.0) * ((1LL << bits-ebits-1) + 0.5);
 	expt += (1 << ebits-1) - 1;
 	wruint(p, (bits+7)/8, sign << bits-1 | expt << bits-ebits-1 | value);
 }
@@ -221,13 +217,9 @@ double rdflt(uchar *p, int bits)
 	exp = rduint(buf, rdbits(buf, p, bits-1-ebits, ebits));
 	sign = rduint(buf, rdbits(buf, p, bits-1, 1)) ? -1 : +1;
 
-	if (exp == 0) {
-		value = value/(1 << bits-1-ebits);
-		exp -= (1 << (ebits-1)) - 2;
-	} else {
-		value = 1.0 + value/(1 << bits-1-ebits);
-		exp -= (1 << (ebits-1)) - 1;
-	}
-
+	if (exp == 0 && value == 0)
+		return 0.0;
+	value = 1.0 + value/(1 << bits-1-ebits);
+	exp -= (1 << (ebits-1)) - 1;
 	return sign * pow(2, exp) * value;
 }
