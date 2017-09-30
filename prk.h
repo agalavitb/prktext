@@ -2,7 +2,7 @@
 
 #define PRK_MAPLEN 15000
 #define PRK_HDRLEN 92
-#define PRK_GNDLEN 58*58
+#define PRK_GNDLEN (58*58)
 #define PRK_GOLEN (PRK_MAPLEN - PRK_HDRLEN - PRK_GNDLEN)
 #define PRK_OBJLEN 8
 #define PRK_GAPLEN 48
